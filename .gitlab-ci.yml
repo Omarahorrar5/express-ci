@@ -1,21 +1,49 @@
 stages:
   - build
+  - push
 
 variables:
   IMAGE_NAME: "express-ci"
 
-build-docker-image:
+build-image:
   stage: build
   image: docker:24.0.5
   services:
-    - docker:24.0.5-dind
+    - name: docker:24.0.5-dind
+      command: ["--tls=false"]
+
   before_script:
-    - docker info
+    - echo "==> Installing Node.js"
     - apk add --no-cache nodejs npm
+    - docker info
+
   script:
+    - echo "==> Running npm install"
     - npm install
+    - echo "==> Building Docker image"
     - docker build -t $IMAGE_NAME:latest .
-    - docker image save $IMAGE_NAME:latest -o docker-image.tar
+
   artifacts:
     paths:
       - docker-image.tar
+
+push-image:
+  stage: push
+  image: docker:24.0.5
+  services:
+    - name: docker:24.0.5-dind
+      command: ["--tls=false"]
+
+  before_script:
+    - docker info
+
+  script:
+    - echo "==> Logging in to Docker Hub"
+    - echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+    - echo "==> Tagging image"
+    - docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:latest .
+    - echo "==> Pushing image"
+    - docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
+
+  only:
+    - main
