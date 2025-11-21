@@ -1,9 +1,22 @@
 stages:
+  - test
   - build
   - push
 
 variables:
   IMAGE_NAME: "express-ci"
+
+test-app:
+  stage: test
+  image: node:18-alpine
+  before_script:
+    - echo "==> Installing dependencies"
+    - npm install
+  script:
+    - echo "==> Running tests"
+    - npm test
+  only:
+    - main
 
 build-image:
   stage: build
@@ -13,19 +26,16 @@ build-image:
       command: ["--tls=false"]
 
   before_script:
-    - echo "==> Installing Node.js"
     - apk add --no-cache nodejs npm
     - docker info
+    - npm install
 
   script:
-    - echo "==> Running npm install"
-    - npm install
     - echo "==> Building Docker image"
     - docker build -t $IMAGE_NAME:latest .
 
-  artifacts:
-    paths:
-      - docker-image.tar
+  only:
+    - main
 
 push-image:
   stage: push

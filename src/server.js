@@ -9,11 +9,12 @@ app.get("/profile", (req, res) => {
   res.send({ name: "Omar", role: "Cloud & DevOps Student" });
 });
 
-app.get("/products", (req, res) => {
-  res.send("This is the list of available products!");
-});
-
 const PORT = 3000;
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
