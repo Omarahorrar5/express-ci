@@ -18,11 +18,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18.x'
+          node-version: '18.19.1'
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --include=dev
         
       - name: Run tests
         run: npm test
@@ -41,7 +41,7 @@ jobs:
           tags: express-ci:latest
 
       - name: Save Docker image to tar
-        run: docker image save simple-express-ci:latest -o docker-image.tar
+        run: docker image save express-ci:latest -o docker-image.tar
 
       - name: Upload docker image artifact
         uses: actions/upload-artifact@v4
