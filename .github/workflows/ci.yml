@@ -38,7 +38,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: false
-          tags: simple-express-ci:latest
+          tags: express-ci:latest
 
       - name: Save Docker image to tar
         run: docker image save simple-express-ci:latest -o docker-image.tar
