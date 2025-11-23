@@ -7,11 +7,11 @@ stages:
 variables:
   IMAGE_NAME: "express-ci"
 
+# ===== Test stage =====
 test-app:
   stage: test
   tags:
     - local-vm
-  image: node:18-alpine
   script:
     - echo "==> Installing dependencies"
     - npm install
@@ -20,6 +20,7 @@ test-app:
   only:
     - main
 
+# ===== Build Docker image =====
 build-image:
   stage: build
   tags:
@@ -30,6 +31,7 @@ build-image:
   only:
     - main
 
+# ===== Push Docker image =====
 push-image:
   stage: push
   tags:
@@ -44,6 +46,7 @@ push-image:
   only:
     - main
 
+# ===== Deploy stage =====
 deploy-to-local:
   stage: deploy
   tags:
