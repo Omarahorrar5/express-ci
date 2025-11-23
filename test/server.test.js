@@ -1,6 +1,4 @@
 const request = require("supertest");
-const express = require("express");
-
 const app = require("../src/server");
 
 describe("Express app endpoints", () => {
@@ -17,6 +15,15 @@ describe("Express app endpoints", () => {
     expect(res.body).toEqual({
       name: "Omar",
       role: "Cloud & DevOps Student"
+    });
+  });
+
+  test("GET /about should return app info", async () => {
+    const res = await request(app).get("/about");
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toEqual({
+      app: "express-ci",
+      version: "1.0.0"
     });
   });
 
