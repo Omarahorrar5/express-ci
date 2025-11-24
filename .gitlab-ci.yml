@@ -25,9 +25,6 @@ build-image:
   tags:
     - local-vm
   image: docker:24.0.5
-  services:
-    - name: docker:24.0.5-dind
-      command: ["--tls=false"]
   script:
     - echo "==> Building Docker image"
     - docker build -t $IMAGE_NAME:latest .
@@ -39,15 +36,12 @@ push-image:
   tags:
     - local-vm
   image: docker:24.0.5
-  services:
-    - name: docker:24.0.5-dind
-      command: ["--tls=false"]
   script:
     - echo "==> Logging into Docker Hub"
     - echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-    - echo "==> Tagging"
+    - echo "==> Tagging image"
     - docker tag $IMAGE_NAME:latest $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
-    - echo "==> Pushing"
+    - echo "==> Pushing image"
     - docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
   only:
     - main
@@ -57,11 +51,8 @@ deploy-to-local:
   tags:
     - local-vm
   image: docker:24.0.5
-  services:
-    - name: docker:24.0.5-dind
-      command: ["--tls=false"]
   script:
-    - echo "==> Deploying image on local VM"
+    - echo "==> Deploying latest image locally"
     - docker pull $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
     - docker stop express-ci || true
     - docker rm express-ci || true
