@@ -24,3 +24,26 @@ Every time you push code to GitHub:
 - **GitHub** - Source control
 - **DockerHub** - Image registry
 - **Ngrok** - Webhook tunnel
+
+### Pipeline Stages
+
+**Stage 1: Checkout**
+- Pulls latest code from GitHub
+
+**Stage 2: Test**
+- Installs npm packages
+- Runs test suite
+
+**Stage 3: Build Image**
+- Creates Docker image
+- Tags with build number
+
+**Stage 4: Push Image**
+- Uploads to DockerHub
+- Available for deployment
+
+**Stage 5: Deploy**
+- Stops old container
+- Starts new container
+- App is updated!
+
